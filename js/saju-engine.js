@@ -55,21 +55,92 @@ window.analyzeSaju = function(year, month, day, hour, minute) {
         return str.split('').map(c => CHINESE_TO_KOREAN[c] || c).join('');
     };
 
+    // 천간 및 지지 속성 정의
+    const GAN_PROPS = {
+        '갑': { ohaeng: '목', color: 'var(--color-mok)', yinYang: '+' },
+        '을': { ohaeng: '목', color: 'var(--color-mok)', yinYang: '-' },
+        '병': { ohaeng: '화', color: 'var(--color-hwa)', yinYang: '+' },
+        '정': { ohaeng: '화', color: 'var(--color-hwa)', yinYang: '-' },
+        '무': { ohaeng: '토', color: 'var(--color-to)', yinYang: '+' },
+        '기': { ohaeng: '토', color: 'var(--color-to)', yinYang: '-' },
+        '경': { ohaeng: '금', color: 'var(--color-geum)', yinYang: '+' },
+        '신': { ohaeng: '금', color: 'var(--color-geum)', yinYang: '-' },
+        '임': { ohaeng: '수', color: 'var(--color-su)', yinYang: '+' },
+        '계': { ohaeng: '수', color: 'var(--color-su)', yinYang: '-' }
+    };
+
+    const JI_PROPS = {
+        '자': { ohaeng: '수', color: 'var(--color-su)', yinYang: '-' },
+        '축': { ohaeng: '토', color: 'var(--color-to)', yinYang: '-' },
+        '인': { ohaeng: '목', color: 'var(--color-mok)', yinYang: '+' },
+        '묘': { ohaeng: '목', color: 'var(--color-mok)', yinYang: '-' },
+        '진': { ohaeng: '토', color: 'var(--color-to)', yinYang: '+' },
+        '사': { ohaeng: '화', color: 'var(--color-hwa)', yinYang: '+' },
+        '오': { ohaeng: '화', color: 'var(--color-hwa)', yinYang: '-' },
+        '미': { ohaeng: '토', color: 'var(--color-to)', yinYang: '-' },
+        '신': { ohaeng: '금', color: 'var(--color-geum)', yinYang: '+' },
+        '유': { ohaeng: '금', color: 'var(--color-geum)', yinYang: '-' },
+        '술': { ohaeng: '토', color: 'var(--color-to)', yinYang: '+' },
+        '해': { ohaeng: '수', color: 'var(--color-su)', yinYang: '-' }
+    };
+
+    // 십신(육친) 도출 함수
+    const OH_CYCLE = ['목', '화', '토', '금', '수'];
+    const getTenGod = (dayGanProps, targetProps) => {
+        if (!dayGanProps || !targetProps) return '';
+        const dayIdx = OH_CYCLE.indexOf(dayGanProps.ohaeng);
+        const targetIdx = OH_CYCLE.indexOf(targetProps.ohaeng);
+        const diff = (targetIdx - dayIdx + 5) % 5;
+        const sameYinYang = dayGanProps.yinYang === targetProps.yinYang;
+
+        switch (diff) {
+            case 0: return sameYinYang ? '비견' : '겁재';
+            case 1: return sameYinYang ? '식신' : '상관';
+            case 2: return sameYinYang ? '편재' : '정재';
+            case 3: return sameYinYang ? '편관' : '정관';
+            case 4: return sameYinYang ? '편인' : '정인';
+            default: return '';
+        }
+    };
+
     // 1. 시간 보정
     const inputDate = new Date(year, month - 1, day, hour, minute);
     const { correctedDate } = correctTime(inputDate);
     
-    // 2. 만세력 엔진 (lunar-javascript) 연동
+    // 2. 만세력 엔진 연동
     const solar = Solar.fromDate(correctedDate);
     const lunar = solar.getLunar();
     const baZi = lunar.getEightChar();
     
-    // 8글자 도출 (사주팔자) - 한글로 변환
+    // 8글자 도출 (사주팔자) - 상세 객체로 변환
+    const yearStr = toKorean(baZi.getYear());
+    const monthStr = toKorean(baZi.getMonth());
+    const dayStr = toKorean(baZi.getDay());
+    const timeStr = toKorean(baZi.getTime());
+
+    const getPillarDetail = (pillarStr) => {
+        const gan = pillarStr.charAt(0);
+        const ji = pillarStr.charAt(1);
+        return {
+            gan: { char: gan, ...GAN_PROPS[gan] },
+            ji: { char: ji, ...JI_PROPS[ji] }
+        };
+    };
+
+    const dayDetail = getPillarDetail(dayStr);
+    const dayGanProps = dayDetail.gan;
+
+    const attachTenGods = (detail, isDayPillar = false) => {
+        detail.gan.tenGod = isDayPillar ? '일간(나)' : getTenGod(dayGanProps, detail.gan);
+        detail.ji.tenGod = getTenGod(dayGanProps, detail.ji);
+        return detail;
+    };
+
     const pillarData = {
-        year: toKorean(baZi.getYear()),     // 연주
-        month: toKorean(baZi.getMonth()),   // 월주
-        day: toKorean(baZi.getDay()),       // 일주
-        time: toKorean(baZi.getTime())      // 시주
+        year: attachTenGods(getPillarDetail(yearStr)),
+        month: attachTenGods(getPillarDetail(monthStr)),
+        day: attachTenGods(dayDetail, true),
+        time: attachTenGods(getPillarDetail(timeStr))
     };
 
     // 3. 오행 가중치 계산 (천간, 지지)

@@ -57,7 +57,18 @@ function renderDashboard(result) {
         
         card.innerHTML = `
             <div class="label">${p.label}</div>
-            <div class="ganji">${p.value}</div>
+            
+            <div class="character-box">
+                <div class="ten-god">${p.data.gan.tenGod}</div>
+                <div class="char" style="color: ${p.data.gan.color}; text-shadow: 0 0 10px ${p.data.gan.color}40;">${p.data.gan.char}</div>
+                <div class="ohaeng-label" style="color: ${p.data.gan.color}">${p.data.gan.ohaeng} (${p.data.gan.yinYang})</div>
+            </div>
+
+            <div class="character-box" style="margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 15px;">
+                <div class="char" style="color: ${p.data.ji.color}; text-shadow: 0 0 10px ${p.data.ji.color}40;">${p.data.ji.char}</div>
+                <div class="ohaeng-label" style="color: ${p.data.ji.color}">${p.data.ji.ohaeng} (${p.data.ji.yinYang})</div>
+                <div class="ten-god" style="margin-top: 5px;">${p.data.ji.tenGod}</div>
+            </div>
         `;
         container.appendChild(card);
     });

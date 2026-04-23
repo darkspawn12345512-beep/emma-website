@@ -161,15 +161,35 @@ header p {
 }
 
 .pillar-card .label {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: var(--text-secondary);
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
 }
 
-.pillar-card .ganji {
-    font-size: 2.5rem;
+.character-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.character-box .char {
+    font-size: 3rem;
     font-weight: 700;
-    letter-spacing: 0.2rem;
+    line-height: 1.2;
+}
+
+.character-box .ten-god {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+
+.character-box .ohaeng-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 2px;
 }
 
 /* Analysis Layout */
