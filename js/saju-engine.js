@@ -146,29 +146,12 @@ window.analyzeSaju = function(year, month, day, hour, minute) {
     // 3. 오행 가중치 계산 (천간, 지지)
     const ohaengMap = { '목': 0, '화': 0, '토': 0, '금': 0, '수': 0 };
     
-    // 간지 오행 매핑
-    const getOhaeng = (char) => {
-        const chars = {
-            '갑': '목', '을': '목', '인': '목', '묘': '목',
-            '병': '화', '정': '화', '사': '화', '오': '화',
-            '무': '토', '기': '토', '진': '토', '술': '토', '축': '토', '미': '토',
-            '경': '금', '신': '금', '신(申)': '금', '유': '금',
-            '임': '수', '계': '수', '해': '수', '자': '수'
-        };
-        const element = chars[char];
-        if(element) return element;
-        return '금'; 
-    };
-
     const processPillar = (pillar) => {
-        const gan = pillar.charAt(0);
-        const ji = pillar.charAt(1);
+        const ganElement = pillar.gan.ohaeng;
+        const jiElement = pillar.ji.ohaeng;
         
         // 천간 1.0, 지지 1.2 가중치
-        const ganElement = getOhaeng(gan);
         if(ganElement) ohaengMap[ganElement] += 1.0;
-        
-        const jiElement = getOhaeng(ji);
         if(jiElement) ohaengMap[jiElement] += 1.2;
     };
 
@@ -185,11 +168,11 @@ window.analyzeSaju = function(year, month, day, hour, minute) {
     }));
 
     // 4. 격국 및 길신 판별
-    let iljuKey = pillarData.day;
+    let iljuKey = pillarData.day.gan.char + pillarData.day.ji.char;
     let iljuInterpret = window.INTERPRETATION_DATA.ilju[iljuKey] || `${iljuKey} 일주의 굳건한 기운을 가지고 태어나셨습니다. 기본적으로 자신의 페이스를 잃지 않고 앞으로 나아가는 힘이 있습니다.`;
 
     let foundGilshin = [];
-    const jiChars = [pillarData.year.charAt(1), pillarData.month.charAt(1), pillarData.day.charAt(1), pillarData.time.charAt(1)];
+    const jiChars = [pillarData.year.ji.char, pillarData.month.ji.char, pillarData.day.ji.char, pillarData.time.ji.char];
     
     // 재고귀인 체크 (단순화: 진술축미가 지지에 있는가)
     if (jiChars.includes('진') || jiChars.includes('술') || jiChars.includes('축') || jiChars.includes('미')) {
@@ -197,7 +180,7 @@ window.analyzeSaju = function(year, month, day, hour, minute) {
     }
     
     // 천을귀인 체크 (간단한 예시: 갑/무 일간에 축/미)
-    const dayGan = pillarData.day.charAt(0);
+    const dayGan = pillarData.day.gan.char;
     if ((dayGan === '갑' || dayGan === '무') && (jiChars.includes('축') || jiChars.includes('미'))) {
         foundGilshin.push('천을귀인');
     }
