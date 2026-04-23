@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Saju - 자평진전 기반 프리미엄 사주 분석</title>
+    <meta name="description" content="한국천문연구원 기준 정밀 만세력과 자평진전 학술에 기반한 현대적이고 긍정적인 사주(8글자) 분석 서비스입니다. 당신의 숨겨진 길신과 오행의 힘을 확인하세요.">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/styles.css">
+    
+    <!-- Libraries -->
+    <!-- lunar-javascript for precise Manseryeok -->
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.min.js"></script>
+    <!-- Chart.js for Ohaeng Visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Modern Saju</h1>
+            <p>나를 알아가는 가장 학술적이고 아름다운 여정</p>
+        </header>
+
+        <!-- Input Section -->
+        <main id="input-section" class="glass-card">
+            <form id="saju-form">
+                <div class="form-group">
+                    <label for="birth-date">생년월일 (양력 기준)</label>
+                    <input type="date" id="birth-date" class="form-control" required value="1990-01-01">
+                </div>
+                
+                <div class="form-group">
+                    <label for="birth-time">태어난 시간 (한국 표준시 기준)</label>
+                    <input type="time" id="birth-time" class="form-control" required value="12:00">
+                    <small style="color: var(--text-secondary); margin-top: 5px; display: block;">
+                        * 동경 135도 및 과거 서머타임은 시스템에서 자동 보정됩니다.
+                    </small>
+                </div>
+
+                <button type="submit" class="btn-submit">사주 명식 분석하기</button>
+            </form>
+        </main>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard-section">
+            <div class="glass-card" style="margin-bottom: 2rem;">
+                <h2 style="text-align: center; margin-bottom: 2rem;">당신의 사주 명식 (四柱命式)</h2>
+                
+                <div class="pillars-grid" id="pillars-container">
+                    <!-- Pillar Cards will be inserted here by JS -->
+                </div>
+            </div>
+
+            <div class="analysis-layout">
+                <!-- Left: Chart -->
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 1rem; color: var(--text-primary); text-align: center;">오행(五行) 에너지 분포</h3>
+                    <div class="chart-container">
+                        <canvas id="ohaeng-chart"></canvas>
+                    </div>
+                    <div id="ohaeng-interpretation" style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary); text-align: center;">
+                        <!-- Ohaeng desc here -->
+                    </div>
+                </div>
+
+                <!-- Right: Interpretations -->
+                <div class="glass-card">
+                    <div class="interpretation-card">
+                        <h3><i data-lucide="crown"></i> 사회적 무기, 격국(格局)</h3>
+                        <div class="badge-container" id="geokguk-badge" style="margin-bottom: 0.5rem;"></div>
+                        <p id="geokguk-desc"></p>
+                    </div>
+
+                    <div class="interpretation-card">
+                        <h3><i data-lucide="star"></i> 나를 돕는 귀인, 길신(吉神)</h3>
+                        <div class="badge-container" id="gilshin-badges" style="margin-bottom: 0.5rem;"></div>
+                        <p id="gilshin-desc"></p>
+                    </div>
+
+                    <div class="interpretation-card">
+                        <h3><i data-lucide="sun"></i> 나의 본질, 일주(日柱)</h3>
+                        <p id="ilju-desc"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <button class="btn-submit" style="width: auto; padding: 0.75rem 2rem; background: rgba(255,255,255,0.1); color: var(--text-primary);" onclick="location.reload()">다시 분석하기</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- App Logic (순차 로드) -->
+    <script src="./js/interpret.js"></script>
+    <script src="./js/saju-engine.js"></script>
+    <script src="./js/app.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
