@@ -44,10 +44,10 @@ function renderDashboard(result) {
     container.innerHTML = '';
     
     const pillarsArr = [
-        { label: '연주 (Year)', value: result.pillars.year },
-        { label: '월주 (Month)', value: result.pillars.month },
-        { label: '일주 (Day)', value: result.pillars.day },
-        { label: '시주 (Time)', value: result.pillars.time }
+        { label: '연주 (Year)', data: result.pillars.year },
+        { label: '월주 (Month)', data: result.pillars.month },
+        { label: '일주 (Day)', data: result.pillars.day },
+        { label: '시주 (Time)', data: result.pillars.time }
     ];
     
     pillarsArr.forEach((p, index) => {
