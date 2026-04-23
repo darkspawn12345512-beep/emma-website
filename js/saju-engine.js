@@ -44,6 +44,17 @@ window.analyzeSaju = function(year, month, day, hour, minute) {
         throw new Error('Lunar JavaScript library is not loaded.');
     }
 
+    // 한자 -> 한글 간지 변환 맵
+    const CHINESE_TO_KOREAN = {
+        '甲': '갑', '乙': '을', '丙': '병', '丁': '정', '戊': '무', '己': '기', '庚': '경', '辛': '신', '壬': '임', '癸': '계',
+        '子': '자', '丑': '축', '寅': '인', '卯': '묘', '辰': '진', '巳': '사', '午': '오', '未': '미', '申': '신', '酉': '유', '戌': '술', '亥': '해'
+    };
+
+    const toKorean = (str) => {
+        if (!str) return '';
+        return str.split('').map(c => CHINESE_TO_KOREAN[c] || c).join('');
+    };
+
     // 1. 시간 보정
     const inputDate = new Date(year, month - 1, day, hour, minute);
     const { correctedDate } = correctTime(inputDate);
@@ -53,12 +64,12 @@ window.analyzeSaju = function(year, month, day, hour, minute) {
     const lunar = solar.getLunar();
     const baZi = lunar.getEightChar();
     
-    // 8글자 도출 (사주팔자)
+    // 8글자 도출 (사주팔자) - 한글로 변환
     const pillarData = {
-        year: baZi.getYear(),     // 연주
-        month: baZi.getMonth(),   // 월주
-        day: baZi.getDay(),       // 일주
-        time: baZi.getTime()      // 시주
+        year: toKorean(baZi.getYear()),     // 연주
+        month: toKorean(baZi.getMonth()),   // 월주
+        day: toKorean(baZi.getDay()),       // 일주
+        time: toKorean(baZi.getTime())      // 시주
     };
 
     // 3. 오행 가중치 계산 (천간, 지지)
